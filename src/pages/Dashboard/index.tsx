@@ -46,7 +46,6 @@ const Dashboard = () => {
   const classes = useStyles();
   const index = useRef(0);
   const [users, setUsers] = useState<User[]>([]);
-  const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [props, api] = useSprings(users.length, (i) => ({
     x: i * window.innerWidth,
@@ -90,7 +89,6 @@ const Dashboard = () => {
       );
 
       setUsers(res?.data?.data);
-      setPage(res.data.page);
     } catch (error) {
       console.log(error);
     }
