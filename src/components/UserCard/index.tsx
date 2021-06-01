@@ -1,6 +1,7 @@
 // import { useState } from "react";
-import { makeStyles } from "@material-ui/core";
-// import FavoriteIcon from "@material-ui/icons/Favorite";
+import { makeStyles, IconButton } from "@material-ui/core";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import CloseIcon from "@material-ui/icons/Close";
 // import ShareIcon from "@material-ui/icons/Share";
 // import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 // import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -18,8 +19,21 @@ const useStyles = makeStyles(() => ({
       marginLeft: ".3rem",
     },
   },
+  mediaContainer: {
+    "& img": {
+      width: "8rem",
+    },
+  },
+  biography: {
+    marginTop: "6rem",
+    height: "300px",
+    width: '80%',
+    overflowY: "auto",
+    wordBreak: 'break-all'
+  },
   actions: {
-    position: "relative",
+    display: "flex",
+    position: "absolute",
     bottom: "0",
   },
 }));
@@ -40,11 +54,21 @@ const UserCard: React.FC<UserCardProps> = ({ name, age, profilePic, bio }) => {
         <div>{name},</div>
         <div>{age}</div>
       </div>
-      <div>
+      <div className={classes.mediaContainer}>
         <img alt={name} src={profilePic} />
       </div>
-      <div>{bio}</div>
-      <div className={classes.actions}>This is action</div>
+      <div className={classes.biography}>
+        {bio ||
+          "This one does not have any info or lame pick-up lines. Boringggg"}
+      </div>
+      <div className={classes.actions}>
+        <IconButton>
+          <FavoriteIcon />
+        </IconButton>
+        <IconButton>
+          <CloseIcon />
+        </IconButton>
+      </div>
     </div>
   );
 };

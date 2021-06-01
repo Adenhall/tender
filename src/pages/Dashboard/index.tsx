@@ -8,6 +8,7 @@ import {
   Button,
   makeStyles,
   Theme,
+  Drawer,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import axios from "axios";
@@ -17,9 +18,13 @@ import { useGesture } from "react-use-gesture";
 import { useSprings, animated } from "react-spring";
 
 const useStyles = makeStyles((theme: Theme) => ({
+  appBar: {
+    height: "8.5%",
+  },
   userCardContainer: {
     width: "100vw",
-    height: "100vh",
+    /** Corresponds with the appBar */
+    height: "91.5%",
     position: "absolute",
     willChange: "transform",
     "& > div": {
@@ -47,18 +52,14 @@ const Dashboard = () => {
   const index = useRef(0);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const [props, api] = useSprings(users.length, (i) => ({
     x: i * window.innerWidth,
     sc: 1,
     display: "block",
   }));
   const bind = useGesture({
-    onDrag: ({
-      down,
-      delta: [xDelta],
-      distance,
-      swipe: [swipeX],
-    }) => {
+    onDrag: ({ down, delta: [xDelta], distance, swipe: [swipeX] }) => {
       swipeX !== 0 &&
         (index.current = clamp(index.current - swipeX, 0, users.length - 1));
       // On swipe left
@@ -99,13 +100,14 @@ const Dashboard = () => {
   }, []);
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           <IconButton
             edge="start"
             className={classes.menuButton}
             color="inherit"
             aria-label="menu"
+            onClick={() => setDrawerOpen(!drawerOpen)}
           >
             <MenuIcon />
           </IconButton>
@@ -115,6 +117,9 @@ const Dashboard = () => {
           <Button color="inherit">Useless button</Button>
         </Toolbar>
       </AppBar>
+      <Drawer variant="temporary" open={drawerOpen} onClose={() => setDrawerOpen(!drawerOpen)}>
+        This is a drawer
+      </Drawer>
       {loading ? (
         <div>Loading...</div>
       ) : (
