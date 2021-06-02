@@ -24,6 +24,9 @@
   "rules": {
     "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
     "linebreak-style": "off",
-    "import/extensions": 0
+    "import/extensions": 0,
+    "no-unused-vars": "off",
+    "react/prop-types": "off",
+    "react/require-default-props": "off"
   }
 }

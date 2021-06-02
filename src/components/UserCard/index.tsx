@@ -49,8 +49,8 @@ type UserCardProps = {
 };
 
 const UserCard: React.FC<UserCardProps> = ({
-  name, age, profilePic, bio, handleLike, handlePass, id,
-}) => {
+  name, age = 0, profilePic, bio, handleLike, handlePass, id,
+}: UserCardProps) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
