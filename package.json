@@ -27,7 +27,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -69,7 +71,7 @@
   },
   "lint-staged": {
     "./src/*.{js,jsx,ts,tsx}": [
-      "npx prettier --write",
+      "npx prettier --write ./src",
       "eslint src/*.{ts,tsx} --fix"
     ]
   }

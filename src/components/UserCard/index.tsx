@@ -48,32 +48,18 @@ type UserCardProps = {
   handlePass: (id: string, dir?: number) => void;
 };
 
-const UserCard: React.FC<UserCardProps> = ({
-  name,
-  age,
-  profilePic,
-  bio,
-  handleLike,
-  handlePass,
-  id,
-}) => {
+const UserCard: React.FC<UserCardProps> = ({ name, age, profilePic, bio, handleLike, handlePass, id }) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <div>
-          {name}
-          ,
-        </div>
+        <div>{name},</div>
         <div>{age}</div>
       </div>
       <div className={classes.mediaContainer}>
         <img alt={name} src={profilePic} />
       </div>
-      <div className={classes.biography}>
-        {bio
-          || 'This one does not have any info or lame pick-up lines. Boringggg'}
-      </div>
+      <div className={classes.biography}>{bio || 'This one does not have any info or lame pick-up lines. Boringggg'}</div>
       <div className={classes.actions}>
         <IconButton onClick={() => handleLike(id)}>
           <FavoriteIcon />

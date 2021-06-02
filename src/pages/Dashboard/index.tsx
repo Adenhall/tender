@@ -24,8 +24,7 @@ const useStyles = makeStyles(() => ({
       width: '100%',
       height: '100%',
       willChange: 'transform',
-      boxShadow:
-        '0 62.5px 125px -25px rgba(50, 50, 73, 0.5), 0 37.5px 75px -37.5px rgba(0, 0, 0, 0.6)',
+      boxShadow: '0 62.5px 125px -25px rgba(50, 50, 73, 0.5), 0 37.5px 75px -37.5px rgba(0, 0, 0, 0.6)',
     },
   },
 }));
@@ -40,41 +39,33 @@ const Dashboard = () => {
     sc: 1,
     display: 'block',
   }));
-  const bind = useDrag(
-    ({
-      down, delta: [xDelta], distance, swipe: [swipeX],
-    }) => {
-      swipeX !== 0
-        && (index.current = clamp(index.current - swipeX, 0, users.length - 1));
-      // On swipe left
-      if (swipeX === -1) {
-        handlePass(users[index.current]?.id);
+  const bind = useDrag(({ down, delta: [xDelta], distance, swipe: [swipeX] }) => {
+    swipeX !== 0 && (index.current = clamp(index.current - swipeX, 0, users.length - 1));
+    // On swipe left
+    if (swipeX === -1) {
+      handlePass(users[index.current]?.id);
+    }
+    // On swipe right
+    if (swipeX === 1) {
+      // handleLike(users[index.current]?.id)
+    }
+    api.start((i) => {
+      if (i < index.current - 1 || i > index.current + 1) {
+        return { display: 'none' };
       }
-      // On swipe right
-      if (swipeX === 1) {
-        // handleLike(users[index.current]?.id)
-      }
-      api.start((i) => {
-        if (i < index.current - 1 || i > index.current + 1) {
-          return { display: 'none' };
-        }
-        const x = (i - index.current) * window.innerWidth + (down ? xDelta : 0);
-        const sc = down ? 1 - distance / window.innerWidth / 2 : 1;
-        return { x, sc, display: 'block' };
-      });
-    },
-  );
+      const x = (i - index.current) * window.innerWidth + (down ? xDelta : 0);
+      const sc = down ? 1 - distance / window.innerWidth / 2 : 1;
+      return { x, sc, display: 'block' };
+    });
+  });
   const fetchData = async (page = 0) => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}user?page=${page}&limit=4`,
-        {
-          headers: {
-            'app-id': process.env.REACT_APP_DUMMY_API_KEY,
-          },
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}user?page=${page}&limit=4`, {
+        headers: {
+          'app-id': process.env.REACT_APP_DUMMY_API_KEY,
         },
-      );
+      });
 
       setUsers(res?.data?.data);
     } catch (error) {
@@ -112,36 +103,18 @@ const Dashboard = () => {
               display,
               transform: x.to((x) => `translate3d(${x}px,0,0)`),
             }}
-            className={classes.userCardContainer}
-          >
+            className={classes.userCardContainer}>
             <animated.div
               style={{
                 transform: sc.to((s) => `scale(${s})`),
-              }}
-            >
-              <UserCard
-                name={users[i].firstName}
-                id={users[i].id}
-                profilePic={users[i].picture || ''}
-                handleLike={handleLike}
-                handlePass={handlePass}
-              />
+              }}>
+              <UserCard name={users[i].firstName} id={users[i].id} profilePic={users[i].picture || ''} handleLike={handleLike} handlePass={handlePass} />
             </animated.div>
           </animated.div>
         ))
       )}
 
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </>
   );
 };
