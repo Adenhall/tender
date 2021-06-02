@@ -48,17 +48,12 @@ type UserCardProps = {
   handlePass: (id: string, dir?: number) => void;
 };
 
-const UserCard: React.FC<UserCardProps> = ({
-  name, age = 0, profilePic, bio, handleLike, handlePass, id,
-}: UserCardProps) => {
+const UserCard: React.FC<UserCardProps> = ({ name, age = 0, profilePic, bio, handleLike, handlePass, id }: UserCardProps) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <div>
-          {name}
-          ,
-        </div>
+        <div>{name},</div>
         <div>{age}</div>
       </div>
       <div className={classes.mediaContainer}>

@@ -90,9 +90,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
     console.log(res);
   };
 
-  const bind = useDrag(({
-    down, delta: [xDelta], distance, swipe: [swipeX],
-  }) => {
+  const bind = useDrag(({ down, delta: [xDelta], distance, swipe: [swipeX] }) => {
     // On swipe left
     if (swipeX === -1) {
       index.current = clamp(index.current - swipeX, 0, users.length - 1);
@@ -129,13 +127,11 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
               display,
               transform: x.to((px) => `translate3d(${px}px,0,0)`),
             }}
-            className={classes.userCardContainer}
-          >
+            className={classes.userCardContainer}>
             <animated.div
               style={{
                 transform: sc.to((s) => `scale(${s})`),
-              }}
-            >
+              }}>
               <UserCard name={users[i].name} id={users[i]._id} profilePic={users[i].pictureUrl || ''} handleLike={handleLike} handlePass={handlePass} />
             </animated.div>
           </animated.div>

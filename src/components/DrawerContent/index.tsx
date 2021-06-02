@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  List, ListItem, ListItemText, makeStyles,
-} from '@material-ui/core';
+import { List, ListItem, ListItemText, makeStyles } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
