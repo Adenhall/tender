@@ -45,7 +45,7 @@ type UserCardProps = {
   profilePic: string;
   bio?: string;
   handleLike: (id: string) => void;
-  handlePass: (id: string) => void;
+  handlePass: (id: string, dir?: number) => void;
 };
 
 const UserCard: React.FC<UserCardProps> = ({ name, age, profilePic, bio, handleLike, handlePass, id }) => {
@@ -67,7 +67,7 @@ const UserCard: React.FC<UserCardProps> = ({ name, age, profilePic, bio, handleL
         <IconButton onClick={() => handleLike(id)}>
           <FavoriteIcon />
         </IconButton>
-        <IconButton onClick={() => handlePass(id)}>
+        <IconButton onClick={() => handlePass(id, 1)}>
           <CloseIcon />
         </IconButton>
       </div>

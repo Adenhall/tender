@@ -71,7 +71,7 @@ const Dashboard = () => {
       }
       // On swipe right
       if (swipeX === 1) {
-        handleLike(users[index.current]?.id)
+        // handleLike(users[index.current]?.id)
       }
       api.start((i) => {
         if (i < index.current - 1 || i > index.current + 1)
@@ -103,17 +103,12 @@ const Dashboard = () => {
 
   const handleLike = (id: string) => {
     toast.success(id, {
-      position: "top-right",
       autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
     });
   };
 
-  const handlePass = (id: string) => {
+  const handlePass = (id: string, dir = 0) => {
+    index.current = clamp(index.current + dir, 0, users.length - 1)
     toast.error("Nahhhh keep looking", {
       autoClose: 1500
     });
