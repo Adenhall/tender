@@ -4,9 +4,10 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import UserCard from 'components/UserCard';
-import { makeStyles } from '@material-ui/core';
+import { Backdrop, makeStyles } from '@material-ui/core';
 import axios from 'axios';
 import { clamp } from 'lodash';
 import { User } from 'types/user';
@@ -18,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { likeUser, passUser } from 'api/users';
 import { login } from 'redux/reducers/auth/auth.actions';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   userCardContainer: {
     width: '100vw',
     /** Corresponds with the appBar */
@@ -34,6 +35,10 @@ const useStyles = makeStyles(() => ({
       willChange: 'transform',
       boxShadow: '0 62.5px 125px -25px rgba(50, 50, 73, 0.5), 0 37.5px 75px -37.5px rgba(0, 0, 0, 0.6)',
     },
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
 }));
 
@@ -68,7 +73,12 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
     display: 'block',
   }));
 
+  const handleBackdropClose = () => {
+    // TO DO: Not sure what feature to do here
+  };
+
   const handleLike = async (id: string) => {
+    setLoading(true);
     const res = await likeUser(id, userDetails._id);
     setUserDetails(res.data);
 
@@ -76,6 +86,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
       autoClose: 1500,
     });
     index.current = clamp(index.current + 1, 0, users.length - 1);
+    setLoading(false);
   };
 
   const handlePass = async (id: string, dir = 0) => {
@@ -118,7 +129,9 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
   return (
     <>
       {loading ? (
-        <div>Loading...</div>
+        <Backdrop className={classes.backdrop} open={loading} onClick={handleBackdropClose}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
       ) : (
         springProps.map(({ x, display, sc }, i) => (
           <animated.div

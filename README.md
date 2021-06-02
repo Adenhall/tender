@@ -21,3 +21,4 @@ This frontend part of the project uses the React.js with Typescript. Other than 
 ### To do
 - Add distance meter between users
 - Full authentication (Currently user can sign in as "Adenhall" by default)
+- Full matchmaking
