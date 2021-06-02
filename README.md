@@ -17,6 +17,7 @@ This frontend part of the project uses the React.js with Typescript. Other than 
 - Create an .env file at root following .env.template
 - Do `npm install`
 - Do `npm start`
+- Once the project is running, just hit the big fat "Sign in" button then you will be logged in as "Adenhall" (Real authentication is still in development)
 
 ### To do
 - Add distance meter between users
