@@ -1,6 +1,6 @@
 import React from "react";
 import { List, ListItem, ListItemText, makeStyles } from "@material-ui/core";
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   list: {
@@ -10,14 +10,25 @@ const useStyles = makeStyles(() => ({
 
 const DrawerContent = () => {
   const classes = useStyles();
-  const history = useHistory()
+  const history = useHistory();
+  const { pathname } = useLocation();
   return (
     <List className={classes.list}>
-      {["Your types", "Logout"].map((text, i) => (
-        <ListItem onClick={() => i === 1 ? history.push('/login') : history.push('/my-types') } button key={text}>
-          <ListItemText primary={text} />
-        </ListItem>
-      ))}
+      {[pathname === "/my-types" ? "Dashboard" : "Your types", "Logout"].map(
+        (text, i) => (
+          <ListItem
+            onClick={() =>
+              i === 1
+                ? history.push("/login")
+                : history.push(pathname === "/my-types" ? "/" : "/my-types")
+            }
+            button
+            key={text}
+          >
+            <ListItemText primary={text} />
+          </ListItem>
+        )
+      )}
     </List>
   );
 };
