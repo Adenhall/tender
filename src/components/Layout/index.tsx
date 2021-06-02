@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import React, { ReactNode, useState } from 'react';
 
 import {
   makeStyles,
@@ -8,13 +8,13 @@ import {
   Typography,
   Drawer,
   Button,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import DrawerContent from "components/DrawerContent";
+} from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import DrawerContent from 'components/DrawerContent';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    height: "8.5%",
+    height: '8.5%',
   },
   title: {
     flexGrow: 1,

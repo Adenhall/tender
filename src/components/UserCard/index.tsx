@@ -1,40 +1,40 @@
-// import { useState } from "react";
-import { makeStyles, IconButton } from "@material-ui/core";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import CloseIcon from "@material-ui/icons/Close";
+import React, { useState } from 'react';
+import { makeStyles, IconButton } from '@material-ui/core';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import CloseIcon from '@material-ui/icons/Close';
 // import ShareIcon from "@material-ui/icons/Share";
 // import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 // import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 const useStyles = makeStyles(() => ({
   container: {
-    width: "100%",
-    height: "100%",
-    padding: "1rem",
+    width: '100%',
+    height: '100%',
+    padding: '1rem',
   },
   header: {
-    display: "flex",
-    marginBottom: ".3rem",
-    "& :last-child": {
-      marginLeft: ".3rem",
+    display: 'flex',
+    marginBottom: '.3rem',
+    '& :last-child': {
+      marginLeft: '.3rem',
     },
   },
   mediaContainer: {
-    "& img": {
-      width: "8rem",
+    '& img': {
+      width: '8rem',
     },
   },
   biography: {
-    marginTop: "6rem",
-    height: "300px",
+    marginTop: '6rem',
+    height: '300px',
     width: '80%',
-    overflowY: "auto",
-    wordBreak: 'break-all'
+    overflowY: 'auto',
+    wordBreak: 'break-all',
   },
   actions: {
-    display: "flex",
-    position: "absolute",
-    bottom: "0",
+    display: 'flex',
+    position: 'absolute',
+    bottom: '0',
   },
 }));
 
@@ -48,20 +48,31 @@ type UserCardProps = {
   handlePass: (id: string, dir?: number) => void;
 };
 
-const UserCard: React.FC<UserCardProps> = ({ name, age, profilePic, bio, handleLike, handlePass, id }) => {
+const UserCard: React.FC<UserCardProps> = ({
+  name,
+  age,
+  profilePic,
+  bio,
+  handleLike,
+  handlePass,
+  id,
+}) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <div>{name},</div>
+        <div>
+          {name}
+          ,
+        </div>
         <div>{age}</div>
       </div>
       <div className={classes.mediaContainer}>
         <img alt={name} src={profilePic} />
       </div>
       <div className={classes.biography}>
-        {bio ||
-          "This one does not have any info or lame pick-up lines. Boringggg"}
+        {bio
+          || 'This one does not have any info or lame pick-up lines. Boringggg'}
       </div>
       <div className={classes.actions}>
         <IconButton onClick={() => handleLike(id)}>
