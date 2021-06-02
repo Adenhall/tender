@@ -87,7 +87,6 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
     setUserDetails(res?.data);
     await fetchData();
     index.current = clamp(index.current + dir, 0, users.length - 1);
-    console.log(res);
   };
 
   const bind = useDrag(({
@@ -124,7 +123,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
         springProps.map(({ x, display, sc }, i) => (
           <animated.div
             {...bind()}
-            key="a"
+            key={users[i]._id}
             style={{
               display,
               transform: x.to((px) => `translate3d(${px}px,0,0)`),
@@ -136,7 +135,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
                 transform: sc.to((s) => `scale(${s})`),
               }}
             >
-              <UserCard name={users[i].name} id={users[i]._id} profilePic={users[i].pictureUrl || ''} handleLike={handleLike} handlePass={handlePass} />
+              <UserCard name={users[i].name} id={users[i]._id} profilePic={users[i].pictureUrl || ''} bio={users[i].bio} age={users[i].age} handleLike={handleLike} handlePass={handlePass} />
             </animated.div>
           </animated.div>
         ))

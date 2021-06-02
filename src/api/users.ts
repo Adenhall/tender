@@ -6,4 +6,8 @@ const likeUser = (id: string, currentUser: string) => axios.post(`${process.env.
 
 const passUser = (id: string, currentUser: string) => axios.post(`${process.env.REACT_APP_BACKEND_URL}users/pass`, { passedId: id, currentUser }).then((res) => res?.data);
 
-export { getAllUsers, likeUser, passUser };
+const getAllLikedUsers = (currentUser: string) => axios.post(`${process.env.REACT_APP_BACKEND_URL}users/getAllLiked`, { currentUser }).then((res) => res?.data);
+
+export {
+  getAllUsers, likeUser, passUser, getAllLikedUsers,
+};

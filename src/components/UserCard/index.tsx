@@ -41,7 +41,7 @@ const useStyles = makeStyles(() => ({
 type UserCardProps = {
   id: string;
   name: string;
-  age?: number;
+  age?: string;
   profilePic: string;
   bio?: string;
   handleLike: (id: string) => void;
@@ -49,7 +49,7 @@ type UserCardProps = {
 };
 
 const UserCard: React.FC<UserCardProps> = ({
-  name, age = 0, profilePic, bio, handleLike, handlePass, id,
+  name, age, profilePic, bio, handleLike, handlePass, id,
 }: UserCardProps) => {
   const classes = useStyles();
   return (
