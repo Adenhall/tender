@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import UserCard from "components/UserCard";
+import DrawerContent from "components/DrawerContent";
 import {
   AppBar,
   Toolbar,
@@ -14,8 +15,10 @@ import MenuIcon from "@material-ui/icons/Menu";
 import axios from "axios";
 import { clamp } from "lodash";
 import { User } from "types/user";
-import { useGesture } from "react-use-gesture";
+import { useDrag } from "react-use-gesture";
 import { useSprings, animated } from "react-spring";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
@@ -52,21 +55,23 @@ const Dashboard = () => {
   const index = useRef(0);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [props, api] = useSprings(users.length, (i) => ({
     x: i * window.innerWidth,
     sc: 1,
     display: "block",
   }));
-  const bind = useGesture({
-    onDrag: ({ down, delta: [xDelta], distance, swipe: [swipeX] }) => {
+  const bind = useDrag(
+    ({ down, delta: [xDelta], distance, swipe: [swipeX] }) => {
       swipeX !== 0 &&
         (index.current = clamp(index.current - swipeX, 0, users.length - 1));
       // On swipe left
       if (swipeX === -1) {
+        handlePass(users[index.current]?.id)
       }
       // On swipe right
       if (swipeX === 1) {
+        handleLike(users[index.current]?.id)
       }
       api.start((i) => {
         if (i < index.current - 1 || i > index.current + 1)
@@ -75,8 +80,8 @@ const Dashboard = () => {
         const sc = down ? 1 - distance / window.innerWidth / 2 : 1;
         return { x, sc, display: "block" };
       });
-    },
-  });
+    }
+  );
   const fetchData = async (page = 0) => {
     setLoading(true);
     try {
@@ -95,6 +100,25 @@ const Dashboard = () => {
     }
     setLoading(false);
   };
+
+  const handleLike = (id: string) => {
+    toast.success(id, {
+      position: "top-right",
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
+  const handlePass = (id: string) => {
+    toast.error("Nahhhh keep looking", {
+      autoClose: 1500
+    });
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -117,8 +141,12 @@ const Dashboard = () => {
           <Button color="inherit">Useless button</Button>
         </Toolbar>
       </AppBar>
-      <Drawer variant="temporary" open={drawerOpen} onClose={() => setDrawerOpen(!drawerOpen)}>
-        This is a drawer
+      <Drawer
+        variant="temporary"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(!drawerOpen)}
+      >
+        <DrawerContent />
       </Drawer>
       {loading ? (
         <div>Loading...</div>
@@ -140,13 +168,27 @@ const Dashboard = () => {
             >
               <UserCard
                 name={users[i].firstName}
-                id={`${i}`}
+                id={users[i].id}
                 profilePic={users[i].picture || ""}
+                handleLike={handleLike}
+                handlePass={handlePass}
               />
             </animated.div>
           </animated.div>
         ))
       )}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   );
 };
