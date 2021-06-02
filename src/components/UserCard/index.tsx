@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles, IconButton } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import CloseIcon from '@material-ui/icons/Close';
@@ -48,12 +48,17 @@ type UserCardProps = {
   handlePass: (id: string, dir?: number) => void;
 };
 
-const UserCard: React.FC<UserCardProps> = ({ name, age, profilePic, bio, handleLike, handlePass, id }) => {
+const UserCard: React.FC<UserCardProps> = ({
+  name, age, profilePic, bio, handleLike, handlePass, id,
+}) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <div>{name},</div>
+        <div>
+          {name}
+          ,
+        </div>
         <div>{age}</div>
       </div>
       <div className={classes.mediaContainer}>
