@@ -13,6 +13,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { login } from 'redux/reducers/auth/auth.actions';
+import { loginWithUsername } from 'api/auth';
 
 function Copyright() {
   return (
@@ -58,11 +61,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
+type LoginProps = {
+  signin(data: any): void;
+};
+
+const SignInSide = ({ signin }: LoginProps) => {
   const classes = useStyles();
   const history = useHistory();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const userDetails = await loginWithUsername('Adenhall', '123');
+    signin(userDetails);
     history.push('/');
   };
 
@@ -82,7 +91,7 @@ export default function SignInSide() {
             <TextField variant="outlined" margin="normal" required fullWidth id="email" label="Email Address" name="email" autoComplete="email" autoFocus />
             <TextField variant="outlined" margin="normal" required fullWidth name="password" label="Password" type="password" id="password" autoComplete="current-password" />
             <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
-            <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} onClick={handleSubmit}>
+            <Button type="button" fullWidth variant="contained" color="primary" className={classes.submit} onClick={handleSubmit}>
               Sign In
             </Button>
             <Grid container>
@@ -105,4 +114,12 @@ export default function SignInSide() {
       </Grid>
     </Grid>
   );
-}
+};
+
+const mapStateToProps = (state: any) => ({});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  signin: (data: any) => dispatch(login(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignInSide);

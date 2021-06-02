@@ -1,7 +1,13 @@
 export type User = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  picture?: string;
-  title: string;
+  _id: string;
+  name: string;
+  age?: string;
+  pictureUrl?: string;
+  bio?: string;
+  username: string;
+  password: string;
+  liked: string[];
+  passed: string[];
+  match: string[];
+  token: string;
 };

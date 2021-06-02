@@ -1,7 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-console */
 import React, { useEffect, useState, useRef } from 'react';
+import { connect } from 'react-redux';
 
 import UserCard from 'components/UserCard';
 import { makeStyles } from '@material-ui/core';
@@ -11,7 +13,10 @@ import { User } from 'types/user';
 import { useDrag } from 'react-use-gesture';
 import { useSprings, animated } from 'react-spring';
 import { toast, ToastContainer } from 'react-toastify';
+import { useHistory } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { likeUser, passUser } from 'api/users';
+import { login } from 'redux/reducers/auth/auth.actions';
 
 const useStyles = makeStyles(() => ({
   userCardContainer: {
@@ -32,41 +37,70 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Dashboard = () => {
+type DashboardProps = {
+  userDetails: any;
+  isLoggedIn: boolean;
+  setUserDetails(data: any): void;
+};
+
+const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) => {
   const classes = useStyles();
   const index = useRef(0);
+  const history = useHistory();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const fetchData = async (page = 0) => {
+    setLoading(true);
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}users`, { liked: userDetails.liked, passed: userDetails.passed, currentUser: userDetails._id });
+
+      setUsers(res?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
+
   const [springProps, api] = useSprings(users.length, (i) => ({
     x: i * window.innerWidth,
     sc: 1,
     display: 'block',
   }));
 
-  const handleLike = (id: string) => {
-    toast.success(id, {
+  const handleLike = async (id: string) => {
+    const res = await likeUser(id, userDetails._id);
+    setUserDetails(res.data);
+
+    toast.success(res?.message, {
       autoClose: 1500,
     });
+    index.current = clamp(index.current + 1, 0, users.length - 1);
   };
 
-  const handlePass = (id: string, dir = 0) => {
-    index.current = clamp(index.current + dir, 0, users.length - 1);
+  const handlePass = async (id: string, dir = 0) => {
     toast.error('Nahhhh keep looking', {
       autoClose: 1500,
     });
+    const res = await passUser(id, userDetails._id);
+
+    setUserDetails(res?.data);
+    await fetchData();
+    index.current = clamp(index.current + dir, 0, users.length - 1);
+    console.log(res);
   };
 
   const bind = useDrag(({
     down, delta: [xDelta], distance, swipe: [swipeX],
   }) => {
-    swipeX !== 0 && (index.current = clamp(index.current - swipeX, 0, users.length - 1));
     // On swipe left
     if (swipeX === -1) {
-      handlePass(users[index.current]?.id);
+      index.current = clamp(index.current - swipeX, 0, users.length - 1);
+      handlePass(users[index.current]?._id);
     }
     // On swipe right
     if (swipeX === 1) {
-      // handleLike(users[index.current]?.id)
+      handleLike(users[index.current]?._id);
     }
     api.start((i) => {
       if (i < index.current - 1 || i > index.current + 1) {
@@ -77,23 +111,9 @@ const Dashboard = () => {
       return { x, sc, display: 'block' };
     });
   });
-  const fetchData = async (page = 0) => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}user?page=${page}&limit=4`, {
-        headers: {
-          'app-id': process.env.REACT_APP_DUMMY_API_KEY,
-        },
-      });
-
-      setUsers(res?.data?.data);
-    } catch (error) {
-      console.log(error);
-    }
-    setLoading(false);
-  };
 
   useEffect(() => {
+    !isLoggedIn && history.push('/login');
     fetchData();
   }, []);
   return (
@@ -116,7 +136,7 @@ const Dashboard = () => {
                 transform: sc.to((s) => `scale(${s})`),
               }}
             >
-              <UserCard name={users[i].firstName} id={users[i].id} profilePic={users[i].picture || ''} handleLike={handleLike} handlePass={handlePass} />
+              <UserCard name={users[i].name} id={users[i]._id} profilePic={users[i].pictureUrl || ''} handleLike={handleLike} handlePass={handlePass} />
             </animated.div>
           </animated.div>
         ))
@@ -127,4 +147,13 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+const mapStateToProps = (state: any) => ({
+  userDetails: state.auth.userDetails,
+  isLoggedIn: state.auth.isAuthorized,
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  setUserDetails: (data: any) => dispatch(login(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
