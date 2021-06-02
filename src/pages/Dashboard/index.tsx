@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable no-console */
 import React, { useEffect, useState, useRef } from 'react';
 
 import UserCard from 'components/UserCard';
@@ -34,12 +37,28 @@ const Dashboard = () => {
   const index = useRef(0);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
-  const [props, api] = useSprings(users.length, (i) => ({
+  const [springProps, api] = useSprings(users.length, (i) => ({
     x: i * window.innerWidth,
     sc: 1,
     display: 'block',
   }));
-  const bind = useDrag(({ down, delta: [xDelta], distance, swipe: [swipeX] }) => {
+
+  const handleLike = (id: string) => {
+    toast.success(id, {
+      autoClose: 1500,
+    });
+  };
+
+  const handlePass = (id: string, dir = 0) => {
+    index.current = clamp(index.current + dir, 0, users.length - 1);
+    toast.error('Nahhhh keep looking', {
+      autoClose: 1500,
+    });
+  };
+
+  const bind = useDrag(({
+    down, delta: [xDelta], distance, swipe: [swipeX],
+  }) => {
     swipeX !== 0 && (index.current = clamp(index.current - swipeX, 0, users.length - 1));
     // On swipe left
     if (swipeX === -1) {
@@ -74,19 +93,6 @@ const Dashboard = () => {
     setLoading(false);
   };
 
-  const handleLike = (id: string) => {
-    toast.success(id, {
-      autoClose: 1500,
-    });
-  };
-
-  const handlePass = (id: string, dir = 0) => {
-    index.current = clamp(index.current + dir, 0, users.length - 1);
-    toast.error('Nahhhh keep looking', {
-      autoClose: 1500,
-    });
-  };
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -95,19 +101,21 @@ const Dashboard = () => {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        props.map(({ x, display, sc }, i) => (
+        springProps.map(({ x, display, sc }, i) => (
           <animated.div
             {...bind()}
-            key={i}
+            key="a"
             style={{
               display,
-              transform: x.to((x) => `translate3d(${x}px,0,0)`),
+              transform: x.to((px) => `translate3d(${px}px,0,0)`),
             }}
-            className={classes.userCardContainer}>
+            className={classes.userCardContainer}
+          >
             <animated.div
               style={{
                 transform: sc.to((s) => `scale(${s})`),
-              }}>
+              }}
+            >
               <UserCard name={users[i].firstName} id={users[i].id} profilePic={users[i].picture || ''} handleLike={handleLike} handlePass={handlePass} />
             </animated.div>
           </animated.div>

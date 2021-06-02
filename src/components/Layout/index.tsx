@@ -1,6 +1,8 @@
 import React, { ReactNode, useState } from 'react';
 
-import { makeStyles, AppBar, Toolbar, IconButton, Typography, Drawer, Button } from '@material-ui/core';
+import {
+  makeStyles, AppBar, Toolbar, IconButton, Typography, Drawer, Button,
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import DrawerContent from 'components/DrawerContent';
 
