@@ -55,6 +55,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
+  /** Get list of users based on who the current user has liked or passed */
   const fetchData = async (page = 0) => {
     setLoading(true);
     try {
@@ -77,6 +78,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
     // TO DO: Not sure what feature to do here
   };
 
+  /** Activate when user does a like event */
   const handleLike = async (id: string) => {
     setLoading(true);
     const res = await likeUser(id, userDetails._id);
@@ -89,6 +91,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
     setLoading(false);
   };
 
+  /** Activate when user does a pass event */
   const handlePass = async (id: string, dir = 0) => {
     toast.error('Nahhhh keep looking', {
       autoClose: 1500,
@@ -100,13 +103,15 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
     index.current = clamp(index.current + dir, 0, users.length - 1);
   };
 
+  /** Enable draggin and swiping */
+
   const bind = useDrag(({
     down, delta: [xDelta], distance, swipe: [swipeX],
   }) => {
     // On swipe left
     if (swipeX === -1) {
       index.current = clamp(index.current - swipeX, 0, users.length - 1);
-      handlePass(users[index.current]?._id);
+      handlePass(users[index.current - 1]?._id);
     }
     // On swipe right
     if (swipeX === 1) {
