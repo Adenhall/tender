@@ -14,12 +14,15 @@ This frontend part of the project uses the React.js with Typescript. Other than 
 - Next.js (I'll think about it)
 
 ### How to start locally
-- Create an .env file at root following .env.template
+- Create an .env file at root following .env.template (Skip this one if you're running BE locally)
 - Do `npm install`
 - Do `npm start`
-- Once the project is running, just hit the big fat "Sign in" button then you will be logged in as "Adenhall" (Real authentication is still in development)
+
+### QA, test account
+- username: 'adenhall'
+- password: '123'
 
 ### To do
 - Add distance meter between users
-- Full authentication (Currently user can sign in as "Adenhall" by default)
+- Sessions and token storage
 - Full matchmaking

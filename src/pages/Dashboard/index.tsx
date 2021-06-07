@@ -3,7 +3,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-console */
 import React, { useEffect, useState, useRef } from 'react';
-import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import UserCard from 'components/UserCard';
@@ -13,9 +12,8 @@ import { clamp } from 'lodash';
 import { User } from 'types/user';
 import { useDrag } from 'react-use-gesture';
 import { useSprings, animated } from 'react-spring';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
-import 'react-toastify/dist/ReactToastify.css';
 import { likeUser, passUser } from 'api/users';
 import { useAuth } from 'contexts/AuthContext';
 
@@ -93,7 +91,7 @@ const Dashboard = () => {
     toast.error('Nahhhh keep looking', {
       autoClose: 1500,
     });
-    const res = userDetails && await passUser(id, userDetails._id);
+    const res = userDetails && (await passUser(id, userDetails._id));
 
     setUserDetails(res?.data);
     await fetchData();
@@ -125,11 +123,7 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    if (userDetails) {
-      fetchData();
-    } else {
-      history.push('/login');
-    }
+    userDetails && fetchData();
   }, []);
   return (
     <>
@@ -158,8 +152,6 @@ const Dashboard = () => {
           </animated.div>
         ))
       )}
-
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </>
   );
 };

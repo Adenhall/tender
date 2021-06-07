@@ -25,12 +25,17 @@ const MyTypes = () => {
     setLikedUsers(data);
   };
   useEffect(() => {
-    if (!userDetails) {
-      history.push('/login');
-    } else fetchData();
+    if (userDetails) fetchData();
   }, []);
   return (
-    <List disablePadding>
+    <List
+      style={{
+        /** This matches with the appBar */
+        height: '91.5%',
+        overflow: 'auto',
+      }}
+      disablePadding
+    >
       {likedUsers.map((user) => (
         <ListItem key={user._id} style={{ borderBottom: '1px solid brown' }} button>
           <ListItemAvatar>

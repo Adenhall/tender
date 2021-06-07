@@ -5,13 +5,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior-y: contain;
   padding: 0;
-  height: 100%;
-  width: 100%;
-  user-select: none;
-  position: fixed;
-  overflow: hidden;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  user-select: none;
+  position: fixed;
 }

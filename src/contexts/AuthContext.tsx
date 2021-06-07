@@ -2,6 +2,7 @@ import React, {
   createContext, ReactNode, useContext, useEffect, useState,
 } from 'react';
 import jwtDecode from 'jwt-decode';
+import { useHistory } from 'react-router-dom';
 
 import { loginWithUsername } from 'api/auth';
 
@@ -38,11 +39,15 @@ export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+  const history = useHistory();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = token && (jwtDecode(token) as IUser);
-    if (user) setCurrentUser(user);
+    if (user) {
+      setCurrentUser(user);
+      history.push('/');
+    }
   }, []);
 
   /** Login with username and password.
