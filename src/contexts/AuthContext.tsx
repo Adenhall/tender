@@ -3,11 +3,14 @@ import React, {
 } from 'react';
 import jwtDecode from 'jwt-decode';
 
+import { loginWithUsername } from 'api/auth';
+
 type AuthProviderProps = {
   children: ReactNode;
 };
 
 interface IUser {
+  _id: string;
   name: string;
   age?: Date;
   pictureUrl?: string;
@@ -21,10 +24,15 @@ interface IUser {
 
 type AuthContextValues = {
   currentUser: IUser | null;
-  login(username: string, password: string): void;
+  login: (username: string, password: string) => Promise<any>;
+  setUserDetails: (user: IUser) => void;
 };
 
-const AuthContext = createContext<AuthContextValues | null>(null);
+const AuthContext = createContext<AuthContextValues>({
+  currentUser: null,
+  login: async () => {},
+  setUserDetails: () => {},
+});
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -35,16 +43,23 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const token = localStorage.getItem('token');
     const user = token && (jwtDecode(token) as IUser);
     if (user) setCurrentUser(user);
-  });
+  }, []);
 
-  /** Login with username and password and then set the token in localStorage */
-  const login = (username: string, password: string) => {
-
+  /** Login with username and password.
+   * Go to Dashboard if successful and then set the token in localStorage */
+  const login = async (username: string, password: string) => {
+    const userDetails = await loginWithUsername(username, password);
+    localStorage.setItem('token', userDetails?.token);
+    setCurrentUser(jwtDecode(userDetails?.token));
+    return userDetails;
   };
+
+  const setUserDetails = (user: IUser) => setCurrentUser(user);
 
   const value = {
     currentUser,
     login,
+    setUserDetails,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

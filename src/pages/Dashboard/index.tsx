@@ -17,7 +17,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { likeUser, passUser } from 'api/users';
-import { login } from 'redux/reducers/auth/auth.actions';
+import { useAuth } from 'contexts/AuthContext';
 
 const useStyles = makeStyles((theme) => ({
   userCardContainer: {
@@ -42,16 +42,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type DashboardProps = {
-  userDetails: any;
-  isLoggedIn: boolean;
-  setUserDetails(data: any): void;
-};
+type DashboardProps = {};
 
-const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) => {
+const Dashboard = () => {
   const classes = useStyles();
   const index = useRef(0);
   const history = useHistory();
+  const { currentUser: userDetails, setUserDetails } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -59,7 +56,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
   const fetchData = async (page = 0) => {
     setLoading(true);
     try {
-      const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}users`, { liked: userDetails.liked, passed: userDetails.passed, currentUser: userDetails._id });
+      const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}users`, { liked: userDetails?.liked, passed: userDetails?.passed, currentUser: userDetails?._id });
 
       setUsers(res?.data?.data);
     } catch (error) {
@@ -81,7 +78,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
   /** Activate when user does a like event */
   const handleLike = async (id: string) => {
     setLoading(true);
-    const res = await likeUser(id, userDetails._id);
+    const res = userDetails && (await likeUser(id, userDetails._id));
     setUserDetails(res.data);
 
     toast.success(res?.message, {
@@ -96,7 +93,7 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
     toast.error('Nahhhh keep looking', {
       autoClose: 1500,
     });
-    const res = await passUser(id, userDetails._id);
+    const res = userDetails && await passUser(id, userDetails._id);
 
     setUserDetails(res?.data);
     await fetchData();
@@ -128,12 +125,12 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
   });
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (userDetails) {
       fetchData();
     } else {
       history.push('/login');
     }
-  }, [isLoggedIn]);
+  }, []);
   return (
     <>
       {loading ? (
@@ -167,13 +164,4 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
   );
 };
 
-const mapStateToProps = (state: any) => ({
-  userDetails: state.auth.userDetails,
-  isLoggedIn: state.auth.isAuthorized,
-});
-
-const mapDispatchToProps = (dispatch: any) => ({
-  setUserDetails: (data: any) => dispatch(login(data)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default Dashboard;

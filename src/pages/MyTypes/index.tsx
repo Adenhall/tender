@@ -2,9 +2,9 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
 import { getAllLikedUsers } from 'api/users';
 import { User } from 'types/user';
+import { useAuth } from 'contexts/AuthContext';
 
 import {
   List, ListItem, ListItemAvatar, ListItemText, Avatar,
@@ -15,16 +15,19 @@ type MyTypesProps = {
   isLoggedIn: boolean;
 };
 
-const MyTypes = ({ userDetails, isLoggedIn }: MyTypesProps) => {
+const MyTypes = () => {
   const history = useHistory();
+  const { currentUser: userDetails } = useAuth();
   const [likedUsers, setLikedUsers] = useState<User[]>([]);
   const fetchData = async () => {
-    const { data } = await getAllLikedUsers(userDetails?._id);
+    const { data } = userDetails && (await getAllLikedUsers(userDetails?._id));
+    console.log(data);
     setLikedUsers(data);
   };
   useEffect(() => {
-    if (!isLoggedIn) history.push('/login');
-    fetchData();
+    if (!userDetails) {
+      history.push('/login');
+    } else fetchData();
   }, []);
   return (
     <List disablePadding>
@@ -40,11 +43,4 @@ const MyTypes = ({ userDetails, isLoggedIn }: MyTypesProps) => {
   );
 };
 
-const mapStateToProps = (state: any) => ({
-  userDetails: state.auth.userDetails,
-  isLoggedIn: state.auth.isAuthorized,
-});
-
-const mapDispatchToProps = (dispatch: any) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MyTypes);
+export default MyTypes;

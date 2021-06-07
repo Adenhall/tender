@@ -13,10 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { login } from 'redux/reducers/auth/auth.actions';
-import { loginWithUsername } from 'api/auth';
-import jwtDecode from 'jwt-decode';
+import { useAuth } from 'contexts/AuthContext';
 
 function Copyright() {
   return (
@@ -62,21 +59,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type LoginProps = {
-  signin(data: any): void;
-};
+type LoginProps = {};
 
-const SignInSide = ({ signin }: LoginProps) => {
+const SignInSide = () => {
   const classes = useStyles();
+  const { login } = useAuth();
   const history = useHistory();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
-    const userDetails = await loginWithUsername(username, password);
-    signin(jwtDecode(userDetails?.token));
-    history.push('/');
+    const user = await login(username, password);
+    if (user) history.push('/');
   };
 
   return (
@@ -142,10 +137,4 @@ const SignInSide = ({ signin }: LoginProps) => {
   );
 };
 
-const mapStateToProps = (state: any) => ({});
-
-const mapDispatchToProps = (dispatch: any) => ({
-  signin: (data: any) => dispatch(login(data)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignInSide);
+export default SignInSide;
