@@ -128,9 +128,12 @@ const Dashboard = ({ userDetails, isLoggedIn, setUserDetails }: DashboardProps) 
   });
 
   useEffect(() => {
-    !isLoggedIn && history.push('/login');
-    fetchData();
-  }, []);
+    if (isLoggedIn) {
+      fetchData();
+    } else {
+      history.push('/login');
+    }
+  }, [isLoggedIn]);
   return (
     <>
       {loading ? (

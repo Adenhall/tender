@@ -21,6 +21,7 @@ interface IUser {
 
 type AuthContextValues = {
   currentUser: IUser | null;
+  login(username: string, password: string): void;
 };
 
 const AuthContext = createContext<AuthContextValues | null>(null);
@@ -35,8 +36,15 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const user = token && (jwtDecode(token) as IUser);
     if (user) setCurrentUser(user);
   });
+
+  /** Login with username and password and then set the token in localStorage */
+  const login = (username: string, password: string) => {
+
+  };
+
   const value = {
     currentUser,
+    login,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

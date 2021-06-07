@@ -19,7 +19,7 @@ const MyTypes = ({ userDetails, isLoggedIn }: MyTypesProps) => {
   const history = useHistory();
   const [likedUsers, setLikedUsers] = useState<User[]>([]);
   const fetchData = async () => {
-    const { data } = await getAllLikedUsers(userDetails._id);
+    const { data } = await getAllLikedUsers(userDetails?._id);
     setLikedUsers(data);
   };
   useEffect(() => {

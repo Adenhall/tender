@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -16,6 +16,7 @@ import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { login } from 'redux/reducers/auth/auth.actions';
 import { loginWithUsername } from 'api/auth';
+import jwtDecode from 'jwt-decode';
 
 function Copyright() {
   return (
@@ -69,9 +70,12 @@ const SignInSide = ({ signin }: LoginProps) => {
   const classes = useStyles();
   const history = useHistory();
 
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
   const handleSubmit = async () => {
-    const userDetails = await loginWithUsername('Adenhall', '123');
-    signin(userDetails);
+    const userDetails = await loginWithUsername(username, password);
+    signin(jwtDecode(userDetails?.token));
     history.push('/');
   };
 
@@ -88,8 +92,30 @@ const SignInSide = ({ signin }: LoginProps) => {
             Sign in
           </Typography>
           <form className={classes.form} noValidate>
-            <TextField variant="outlined" margin="normal" required fullWidth id="email" label="Email Address" name="email" autoComplete="email" autoFocus />
-            <TextField variant="outlined" margin="normal" required fullWidth name="password" label="Password" type="password" id="password" autoComplete="current-password" />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              autoFocus
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
             <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
             <Button type="button" fullWidth variant="contained" color="primary" className={classes.submit} onClick={handleSubmit}>
               Sign In
