@@ -4,6 +4,7 @@
 
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
+import pretty from 'pretty';
 import UserCard from '../index';
 
 describe('UserCard component', () => {
@@ -35,5 +36,12 @@ describe('UserCard component', () => {
       render(<UserCard {...userCardProps} />, container);
     });
     expect(container.textContent).toBe(`${userCardProps.name},${userCardProps.bio}`);
+  });
+
+  it('matches snapshot', () => {
+    act(() => {
+      render(<UserCard {...userCardProps} />, container);
+    });
+    expect(pretty(container.innerHTML)).toMatchSnapshot();
   });
 });
